@@ -30,11 +30,25 @@ public class CompanyDto {
     @Column(name = "URL")
     private String url;
 
+    @Override
+    public String toString() {
+        return "CompanyDto{" +
+                "companyName='" + companyName + '\'' +
+                ", address='" + address + '\'' +
+                ", number='" + number + '\'' +
+                ", aver_rate=" + aver_rate +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", googlePlaceId='" + googlePlaceId + '\'' +
+                ", url='" + url + '\'' +
+                '}';
+    }
+
     public CompanyDto(String companyName
             , String address, String number
             , double aver_rate, String latitude
             , String longitude, String googlePlaceId
-                      ,String url
+                      , String url
     ){
         this.companyName = companyName;
         this.address = address;

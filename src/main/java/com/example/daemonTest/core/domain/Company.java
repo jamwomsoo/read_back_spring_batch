@@ -1,6 +1,7 @@
 package com.example.daemonTest.core.domain;
 
 
+import com.example.daemonTest.core.dto.CompanyDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -54,5 +55,47 @@ public class Company extends BaseTimeEntity{
         this.longitude = longitude;
         this.googlePlaceId = googlePlaceId;
         this.url           = url;
+    }
+
+    public CompanyDto toDto(){
+        return CompanyDto.builder()
+                .companyName(companyName)
+                .address(address)
+                .number(phoneNum)
+                .aver_rate(grade)
+                .latitude(latitude)
+                .longitude(longitude)
+                .googlePlaceId(googlePlaceId)
+                .url(url)
+                .build();
+    }
+
+    public Company update(Company entity){
+        this.companyName = entity.getCompanyName();
+        this.address     = entity.getAddress();
+        this.phoneNum    = entity.getPhoneNum();
+        this.grade       = entity.getGrade();
+        this.latitude    = entity.getLatitude();
+        this.longitude   = entity.getLongitude();
+        this.url         = entity.getUrl();
+        return this;
+    }
+
+    public void setId(Long id){
+        this.id = id;
+    }
+    @Override
+    public String toString() {
+        return "Company{" +
+                "id=" + id +
+                ", companyName='" + companyName + '\'' +
+                ", address='" + address + '\'' +
+                ", phoneNum='" + phoneNum + '\'' +
+                ", grade=" + grade +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", googlePlaceId='" + googlePlaceId + '\'' +
+                ", url='" + url + '\'' +
+                '}';
     }
 }

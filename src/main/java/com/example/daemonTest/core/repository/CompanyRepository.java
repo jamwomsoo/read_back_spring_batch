@@ -13,4 +13,6 @@ public interface CompanyRepository extends JpaRepository<Company,Long> {
             "WHERE companyName=:company_name " +
             "AND address=:address")
     boolean existByCompany(@Param("company_name") String company_name, @Param("address") String address);
+
+    Company findByGooglePlaceId(String google_id);
 }

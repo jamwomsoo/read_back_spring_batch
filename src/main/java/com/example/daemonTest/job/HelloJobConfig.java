@@ -3,11 +3,10 @@ package com.example.daemonTest.job;
 import com.example.daemonTest.core.domain.Company;
 import com.example.daemonTest.core.dto.CompanyDto;
 import com.example.daemonTest.core.repository.CompanyRepository;
+import com.example.daemonTest.core.service.GoogleMapApiService;
 import com.example.daemonTest.job.listener.JobCompletionNotificationListener;
-import com.example.daemonTest.job.processor.MyProcessor;
-import com.example.daemonTest.job.reader.MyReader;
-import com.example.daemonTest.job.writer.MyWriter;
 import lombok.RequiredArgsConstructor;
+import org.h2.schema.Constant;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -17,17 +16,24 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.Scheduled;
+
+import java.time.Duration;
 
 @Configuration
 @EnableBatchProcessing
 @RequiredArgsConstructor
+@Import(CommonConfig.class)
 public class HelloJobConfig {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final CompanyRepository companyRepository;
-
+    private final GoogleMapApiService googleMapApiService;
+    private static final int SHEDULE_DAY  = 30;
     /*@Bean("hellojob")
     public Job helloJob(){
         return jobBuilderFactory.get("helloJob")
@@ -61,7 +67,7 @@ public class HelloJobConfig {
         });
     }*/
     @Bean
-    public Step myStep(ItemReader<CompanyDto> reader, ItemProcessor<CompanyDto, Company> processor, ItemWriter<Company> writer) {
+    public Step myStep(@Qualifier("myReader") ItemReader<CompanyDto> reader,@Qualifier("myProcessor") ItemProcessor<CompanyDto, Company> processor,@Qualifier("myWriter") ItemWriter<Company> writer) {
         return stepBuilderFactory.get("myStep")
                 .<CompanyDto, Company>chunk(10)
                 .reader(reader)
@@ -71,32 +77,17 @@ public class HelloJobConfig {
     }
 
     @Bean
+    @Scheduled(cron = "0 0 12 1 *") // 매달 1일에 실행(Job)
     public Job myJob(JobCompletionNotificationListener listener, Step myStep) {
         return jobBuilderFactory.get("myJob")
                 .incrementer(new RunIdIncrementer())
+                .start(myStep)
                 .listener(listener)
+                /*.listener(listener)
                 .flow(myStep)
-                .end()
+                .end()*/
                 .build();
     }
 
-    @Bean
-    public ItemReader<CompanyDto> myReader() {
-        return new MyReader();
-    }
 
-    @Bean
-    public ItemProcessor<CompanyDto, Company> myProcessor() {
-        return new MyProcessor();
-    }
-
-    @Bean
-    public ItemWriter<Company> myWriter() {
-        return new MyWriter(companyRepository);
-    }
-
-    @Bean
-    public JobCompletionNotificationListener jobCompletionNotificationListener() {
-        return new JobCompletionNotificationListener();
-    }
 }

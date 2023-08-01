@@ -22,7 +22,8 @@ spring:
       connectionTimeout: '10000'
       max-lifetime: '580000'
       jdbc-url: jdbc:mariadb://localhost:3306/db1?autoReconnect=true
-      password:
+      password: ''
       connection-init-sql: SELECT 1 FROM DUAL
   batch:
     initialize-schema: always
+    job.names: ${job.name:EMPTY}
