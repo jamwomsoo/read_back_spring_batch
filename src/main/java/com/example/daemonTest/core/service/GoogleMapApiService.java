@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 public class GoogleMapApiService {
-    private static final String API_KEY = "";
+    private static final String API_KEY = " ";
     private final GeoApiContext context;
     private final List<CompanyDto> companyDtoList;
 
